@@ -109,7 +109,7 @@ export const storeUser = async ({ request, response }: { request: any, response:
     response.status = 200;
     response.body = {
         success: true,
-        data: users[users.length-1] // should use user, wanted to see if it had updated array.
+        data: users[users.length-1]
     };
     return;
 }
