@@ -2,4 +2,4 @@
 .vscode
 
 # Database value
-config/database.ts
+src/config/database.ts
