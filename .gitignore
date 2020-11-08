@@ -1,3 +1,5 @@
 # Vscode config folder
-
 .vscode
+
+# Database value
+config/database.ts
