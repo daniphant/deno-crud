@@ -2,4 +2,4 @@
 .vscode
 
 # Database value
-src/config/database.ts
+src/config/dbauth.ts
