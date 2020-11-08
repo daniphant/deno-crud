@@ -8,6 +8,6 @@ const port = Number(Deno.env.get("PORT")) || 5000
 app.use(router.routes())
 app.use(router.allowedMethods())
 
-console.log(`server running on port ${Deno.env.get("PORT")}`)
+console.log(`server running on port ${port}`)
 
 await app.listen({port})
