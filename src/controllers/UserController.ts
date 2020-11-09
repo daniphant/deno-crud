@@ -1,5 +1,5 @@
 import { User } from "../types.ts";
-import db, { runQuery } from "../db.ts";
+import { runQuery } from "../db.ts";
 
 // @desc    Index all of the users in the database
 // @route   GET /users/index
