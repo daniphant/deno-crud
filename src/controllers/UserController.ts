@@ -82,3 +82,22 @@ export const updateUser = async ({params, request, response}) => {
         data: user
     }
 }
+
+// @desc    Index user by id
+// @route   GET /users/:id
+export const deleteUser = async ({ params, response }) => {
+    const ok = await runQuery(`DELETE FROM users\nWHERE id=${params.id};`);
+
+    if(!ok) {
+        response.status = 400;
+        response.body = {
+            success: false,
+            data: "Not able to delete the user"
+        }
+    }
+    response.status = 200;
+    response.body = {
+        success: true,
+        data: []
+    }
+}
