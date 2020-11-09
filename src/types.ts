@@ -1,10 +1,8 @@
 export interface User {
     id: number,
-    gender: string,
-    name: {
-        title: string,
-        first: string,
-        last: string
-    },
+    username: string,
     email: string,
+    password: string,
+    created_at: Date,
+    updated_at: Date
 }
