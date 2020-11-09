@@ -76,7 +76,7 @@ export const updateUser = async ({params, request, response}) => {
         }
         return;
     }
-    const user = await runQuery(`UPDATE users\nSET username = '${username}',\n    email = '${email}',\n    password = '${password}'\nWHERE id = '${params.id}'\nRETURNING *;` )
+    const user = await runQuery(`UPDATE users\nSET username = '${username}',\n    email = '${email}',\n    password = '${password}'\nWHERE id = ${params.id}\nRETURNING *;` )
     response.body = {
         success: true,
         data: user
