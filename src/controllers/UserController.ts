@@ -24,7 +24,7 @@ export const indexUsers = async ({ response }) => {
 
 // @desc    Index user by id
 // @route   GET /users/:id
-export const indexUser = async ({ params, response }: { params: {id: string} }) => {
+export const indexUser = async ({ params, response }) => {
     const user = await runQuery(`SELECT * FROM users WHERE id=${params.id}`);
 
     if (!user.length) {
