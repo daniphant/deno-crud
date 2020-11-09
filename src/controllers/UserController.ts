@@ -63,3 +63,22 @@ export const storeUser = async ({ request, response }) => {
         data: user
     }
 }
+// @desc    Updates user in the database by id
+// @route   POST /users/
+export const updateUser = async ({params, request, response}) => {
+    const { username, email, password }: Omit<User, "id"> = await (await request.body()).value;
+
+    if(!request.hasBody) {
+        response.status = 300;
+        response.body = {
+            success: false,
+            data: "No data was received by the server."
+        }
+        return;
+    }
+    const user = await runQuery(`UPDATE users\nSET username = '${username}',\n    email = '${email}',\n    password = '${password}'\nWHERE id = '${params.id}'\nRETURNING *;` )
+    response.body = {
+        success: true,
+        data: user
+    }
+}

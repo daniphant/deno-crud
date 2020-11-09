@@ -7,7 +7,7 @@ router
     .get("/users/", UserController.indexUsers)
     .post("/users/", UserController.storeUser)
     .get("/users/:id", UserController.indexUser)
-    // .put("/users/:id", UserController.updateUser)
+    .put("/users/:id", UserController.updateUser)
     // .post("/users/:id/delete", UserController.deleteUser)
 
 export default router;
