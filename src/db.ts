@@ -5,7 +5,7 @@ const client = new Client(dbauth);
 
 await client.connect();
 
-export const runQuery = async (query: string, args) => {
+export const runQuery = async (query: string) => {
   console.log(`Executing\n${query}`);
   const result = await client.query(query);
   return result.rows;
