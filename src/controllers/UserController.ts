@@ -1,4 +1,5 @@
 import * as bcrypt from "https://deno.land/x/bcrypt/mod.ts";
+import { create } from "https://deno.land/x/djwt/mod.ts"
 
 import { User } from "../types.ts";
 import { runQuery } from "../db.ts";
@@ -26,8 +27,17 @@ export const indexUsers = async ({ response }) => {
 
 // @desc    Index user by id
 // @route   GET /users/:id
-export const indexUser = async ({ params, response }) => {
-    const user = await runQuery(`SELECT id, username, email, created_at, updated_at FROM users WHERE id=${params.id};`);
+export const indexUser = async ({ request, response }) => {
+    if(!request.token) {
+        response.status = 400;
+        response.body = {
+            success: false,
+            data: "There was a problem retrieving the token from the middleware"
+        }
+        return;
+    }
+
+    const user = await runQuery(`SELECT id, username, email, created_at, updated_at FROM users WHERE id=${request.token.id};`);
 
     if (!user.length) {
         response.status = 404;
@@ -49,6 +59,7 @@ export const indexUser = async ({ params, response }) => {
 // @route POST /users/auth
 export const authenticateUser = async ({ request, response }) => {
     const { email, password } = await (await request.body()).value;
+    const SECRET = Deno.env.get("TOKEN_SECRET") || "0";
 
     const auth = await runQuery(`SELECT email, password FROM users WHERE email='${email}';`);
 
@@ -71,18 +82,18 @@ export const authenticateUser = async ({ request, response }) => {
         return;
     }
     const user = await runQuery(`SELECT id, email, username, created_at, updated_at FROM users WHERE email='${email}';`);
+    const jwt = await create({ alg: "HS512", typ: "JWT" }, { "id": user[0][0] }, SECRET) // user[0][0] == id
+
     response.status = 200;
     response.body = {
         success: true,
-        data: user,
+        data: {user, jwt}
     };
 }
 
 // @desc    Add an user to the database
 // @route   POST /users/
 export const storeUser = async ({ request, response }) => {
-    const { username, email, password }: Omit<User, "id"> = await (await request.body()).value;
-
     if(!request.hasBody) {
         response.status = 300;
         response.body = {
@@ -91,6 +102,8 @@ export const storeUser = async ({ request, response }) => {
         }
         return;
     }
+
+    const { username, email, password }: Omit<User, "id"> = await (await request.body()).value;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -103,7 +116,16 @@ export const storeUser = async ({ request, response }) => {
 }
 // @desc    Updates user in the database by id
 // @route   POST /users/
-export const updateUser = async ({params, request, response}) => {
+export const updateUser = async ({request, response}) => {
+    if(!request.token) {
+        response.status = 400;
+        response.body = {
+            success: false,
+            data: "There was a problem retrieving the token from the middleware"
+        }
+        return;
+    }
+
     const { username, email, password }: Omit<User, "id"> = await (await request.body()).value;
 
     if(!request.hasBody) {
@@ -114,7 +136,7 @@ export const updateUser = async ({params, request, response}) => {
         }
         return;
     }
-    const user = await runQuery(`UPDATE users\nSET username = '${username}',\n    email = '${email}',\n    password = '${password}'\nWHERE id = ${params.id}\nRETURNING *;` )
+    const user = await runQuery(`UPDATE users\nSET username = '${username}',\n    email = '${email}',\n    password = '${password}'\nWHERE id = ${request.token.id}\nRETURNING *;` )
     response.body = {
         success: true,
         data: user
@@ -123,8 +145,18 @@ export const updateUser = async ({params, request, response}) => {
 
 // @desc    Index user by id
 // @route   GET /users/:id
-export const deleteUser = async ({ params, response }) => {
-    const ok = await runQuery(`DELETE FROM users\nWHERE id=${params.id};`);
+export const deleteUser = async ({ request, response }) => {
+    if(!request.token) {
+        response.status = 400;
+        response.body = {
+            success: false,
+            data: "There was a problem retrieving the token from the middleware"
+        }
+        return;
+    }
+
+    const ok = await runQuery(`DELETE FROM users\nWHERE id=${request.token.id};`);
+
 
     if(!ok) {
         response.status = 400;

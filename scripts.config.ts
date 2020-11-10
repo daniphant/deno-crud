@@ -8,7 +8,8 @@ const config: DenonConfig = {
     },
   },
   env: {
-    PORT : "5000"
+    PORT : "5000",
+    TOKEN_SECRET: "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJmb28iOiJiYXIifQ.WePl7achkd0oGNB8XRF_LJwxlyiPZqpdNgdKpDboAjSTsWq-aOGNynTp8TOv8KjonFym8vwFwppXOLoLXbkIaQ"
   },
   allow: ["net", "env"]
 };
