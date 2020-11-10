@@ -1,3 +1,5 @@
+import * as bcrypt from "https://deno.land/x/bcrypt/mod.ts";
+
 import { User } from "../types.ts";
 import { runQuery } from "../db.ts";
 
@@ -57,7 +59,9 @@ export const storeUser = async ({ request, response }) => {
         return;
     }
 
-    const user = await runQuery(`INSERT INTO users (username, email, password)\nVALUES ('${username}', '${email}', '${password}')\nRETURNING *;`);
+    const hashedPassword = bcrypt.hash(password, 10);
+
+    const user = await runQuery(`INSERT INTO users (username, email, password)\nVALUES ('${username}', '${email}', '${hashedPassword}')\nRETURNING *;`);
     response.body = {
         success: true,
         data: user
