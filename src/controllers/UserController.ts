@@ -6,7 +6,7 @@ import { runQuery } from "../db.ts";
 // @desc    Index all of the users in the database
 // @route   GET /users/index
 export const indexUsers = async ({ response }) => {
-    const users = await runQuery("SELECT (username, email, created_at, updated_at) FROM users;");
+    const users = await runQuery("SELECT id, username, email, created_at, updated_at FROM users;");
     
     if(!users.length) {
         response.status = 400;
@@ -27,7 +27,7 @@ export const indexUsers = async ({ response }) => {
 // @desc    Index user by id
 // @route   GET /users/:id
 export const indexUser = async ({ params, response }) => {
-    const user = await runQuery(`SELECT (username, email, created_at, updated_at) FROM users WHERE id=${params.id};`);
+    const user = await runQuery(`SELECT id, username, email, created_at, updated_at FROM users WHERE id=${params.id};`);
 
     if (!user.length) {
         response.status = 404;

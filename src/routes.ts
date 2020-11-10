@@ -4,6 +4,7 @@ import * as UserController from "./controllers/UserController.ts";
 const router = new Router();
 
 router
+    .post("/users/auth", UserController.authenticateUser)
     .get("/users", UserController.indexUsers)
     .post("/users", UserController.storeUser)
     .get("/users/:id", UserController.indexUser)
