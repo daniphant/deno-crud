@@ -4,7 +4,7 @@ import { DenonConfig } from "https://deno.land/x/denon@2.4.4/mod.ts";
 const config: DenonConfig = {
   scripts: {
     start: {
-      cmd: "deno run --no-check src/server.ts",
+      cmd: "deno run --unstable --no-check src/server.ts",
     },
   },
   env: {
