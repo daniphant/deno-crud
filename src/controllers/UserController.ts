@@ -46,6 +46,7 @@ export const indexUser = async ({ params, response }) => {
 }
 // #WARN: EXTREMELY VULNERABLE TO SQL INJECTION
 // @desc Authenticates an user based on the inputted email and password.
+// @route POST /users/auth
 export const authenticateUser = async ({ request, response }) => {
     const { email, password } = await (await request.body()).value;
 
