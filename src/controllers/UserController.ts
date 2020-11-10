@@ -6,7 +6,7 @@ import { runQuery } from "../db.ts";
 // @desc    Index all of the users in the database
 // @route   GET /users/index
 export const indexUsers = async ({ response }) => {
-    const users = await runQuery("SELECT * FROM users;");
+    const users = await runQuery("SELECT (username, email, created_at, updated_at) FROM users;");
     
     if(!users.length) {
         response.status = 400;
@@ -27,7 +27,7 @@ export const indexUsers = async ({ response }) => {
 // @desc    Index user by id
 // @route   GET /users/:id
 export const indexUser = async ({ params, response }) => {
-    const user = await runQuery(`SELECT * FROM users WHERE id=${params.id};`);
+    const user = await runQuery(`SELECT (username, email, created_at, updated_at) FROM users WHERE id=${params.id};`);
 
     if (!user.length) {
         response.status = 404;
@@ -59,7 +59,8 @@ export const storeUser = async ({ request, response }) => {
         return;
     }
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await runQuery(`INSERT INTO users (username, email, password)\nVALUES ('${username}', '${email}', '${hashedPassword}')\nRETURNING *;`);
     response.body = {
