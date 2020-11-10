@@ -44,6 +44,38 @@ export const indexUser = async ({ params, response }) => {
     };
     return;
 }
+// #WARN: EXTREMELY VULNERABLE TO SQL INJECTION
+// @desc Authenticates an user based on the inputted email and password.
+export const authenticateUser = async ({ request, response }) => {
+    const { email, password } = await (await request.body()).value;
+
+    const auth = await runQuery(`SELECT email, password FROM users WHERE email='${email}';`);
+
+    if(auth == []) {
+        console.log("auth is empty")
+        response.status = 400;
+        response.body = {
+            success: false,
+            data: "User not found",
+        };
+        return;
+    }
+    if(!await bcrypt.compare(password, auth[0][1])) {
+        console.log("password is no bueno")
+        response.status = 400;
+        response.body = {
+            success: false,
+            data: "Incorrect password.",
+        };
+        return;
+    }
+    const user = await runQuery(`SELECT id, email, username, created_at, updated_at FROM users WHERE email='${email}';`);
+    response.status = 200;
+    response.body = {
+        success: true,
+        data: user,
+    };
+}
 
 // @desc    Add an user to the database
 // @route   POST /users/
