@@ -1,0 +1,5 @@
+# Vscode config folder
+.vscode
+
+# Database value
+src/config/dbauth.ts
